@@ -4,6 +4,6 @@ function plot_2d_obj(obj)
     hold off;
     axis equal;
     grid on;
-    xlim([-100,100]); xlabel('x');
-    ylim([-100,100]); ylabel('y');
+    xlim([-10,10]); xlabel('x');
+    ylim([-10,10]); ylabel('y');
 end
