@@ -1,5 +1,5 @@
 # MAV_Trajectory_Planner
-A simulation setup for simple MAV trajectory planner.
+An implementation of real-time optimal trajectory generation base on the minimum snap trajectory.
 ## Objectives
 The algorithm is able to perform real-time optimal trajectory planning and compute the corresponding control input. The generated trajectory should be trackable, which means the initial and the final MAV states as well as the limitation of pitch angle should be taken into consideration.
 ![](images/result.gif)
