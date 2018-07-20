@@ -30,7 +30,8 @@ This function finds the shortest trajectory satisfies the constraint that the pi
 ```
 ![](images/find_best_time_interval.png)
 ## References
-[Minimum Snap Trajectory Generation and Control for Quadrotors
-](https://ieeexplore.ieee.org/abstract/document/5980409/)
-[Aggressive flight of fixed-wing and quadrotor aircraft in dense indoor environments](http://journals.sagepub.com/doi/abs/10.1177/0278364914558129)
+1. [Minimum Snap Trajectory Generation and Control for Quadrotors
+](https://ieeexplore.ieee.org/abstract/document/5980409/)  
+
+2.[Aggressive flight of fixed-wing and quadrotor aircraft in dense indoor environments](http://journals.sagepub.com/doi/abs/10.1177/0278364914558129)
 
