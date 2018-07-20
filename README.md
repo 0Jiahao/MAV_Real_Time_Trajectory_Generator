@@ -22,6 +22,7 @@ Generate a trajectory by minimizing the snap over time with designed consraints 
 ```Matlab
 > [waypoints,path_c] = path_planner(obj,tgt,time)  
 ```
+where *obj* is the MAV and *tgt* is the target point.
 ## Find The Optimal Time Interval of The Trajectory
 This function finds the shortest trajectory satisfies the constraint that the pitch angle should less than 20 degrees.
 ```Matlab
