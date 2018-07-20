@@ -20,13 +20,13 @@ obj = dynamic_mav(obj,u,ts);
 ## Minimum Snap Trajectory
 Generates a trajectory by minimizing the snap over time with designed consraints (e.g. initial position, velocity etc.).
 ```Matlab
-> [waypoints,path_c] = path_planner(obj,tgt,time)  
+[waypoints,path_c] = path_planner(obj,tgt,time)  
 ```
 where *obj* is the MAV and *tgt* is the target point.
 ## Find The Optimal Time Interval of The Trajectory
 This function finds the shortest trajectory satisfies the constraint that the pitch angle should be less than 20 degrees.
 ```Matlab
->[waypoints,path_c,opt_time] = time_optimal_path_planner(mav,tgt,ts);
+[waypoints,path_c,opt_time] = time_optimal_path_planner(mav,tgt,ts);
 ```
 ![](images/find_best_time_interval.png)
 ## References
