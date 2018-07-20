@@ -1,9 +1,9 @@
 clear; clc; close all;
     mav.position = [-5,-5,7];         % xyz-axis
     mav.angle = [pi/2,0,0];
-    mav.speed = [-2,-1,0];            % body frame
+    mav.speed = [0,0,0];            % body frame
     tgt.position = [0,0,5];           % xyz-axis
-    tgt.angle = [pi/4,0,0];
+    tgt.angle = [pi/3,0,0];
 % sampling time
 ts = 0.05; 
 g = 9.80665;
