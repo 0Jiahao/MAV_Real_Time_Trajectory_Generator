@@ -1,5 +1,5 @@
 # MAV Real Time Trajectory Generator
-An implementation of real-time optimal trajectory generation base on the minimum snap trajectory.
+An implementation of real-time optimal trajectory generation bases on the minimum snap trajectory.
 ## Objectives
 The algorithm is able to perform real-time optimal trajectory planning and compute the corresponding control input. The generated trajectory should be trackable, which means the initial and the final MAV states as well as the limitation of pitch angle should be taken into consideration.
 ![](images/result.gif)
@@ -24,7 +24,7 @@ Generates a trajectory by minimizing the snap over time with designed consraints
 ```
 where *obj* is the MAV and *tgt* is the target point.
 ## Find The Optimal Time Interval of The Trajectory
-This function finds the shortest trajectory satisfies the constraint that the pitch angle should less than 20 degrees.
+This function finds the shortest trajectory satisfies the constraint that the pitch angle should be less than 20 degrees.
 ```Matlab
 >[waypoints,path_c,opt_time] = time_optimal_path_planner(mav,tgt,ts);
 ```
