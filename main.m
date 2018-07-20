@@ -1,33 +1,34 @@
 clear; clc; close all;
-    mav.position = [-1,-1,25];    % xyz-axis
+    mav.position = [-5,-5,5];    % xyz-axis
     mav.angle = [0,0,0];
-    mav.speed = [0,0,0];            % body frame
-    tgt.position = [1,1,23];      % xyz-axis
-    tgt.angle = [0,0,0];
-    tgt.speed = [0,0,0];            % body frame
+    mav.speed = [-3,-1,0];            % body frame
+    tgt.position = [0,0,5];      % xyz-axis
+    tgt.angle = [pi/6,0,0];
 % sampling time
-ts = 0.2; 
+ts = 0.05; 
 g = 9.80665;
+m = 0.53263; % kg
 % control input u = (T,yaw,pitch,roll)
 % yaw anti-clockwise; pitch forward; roll right
 % definition of yaw, pitch, row see https://en.wikipedia.org/wiki/Aircraft_principal_axes
-u = [g,pi/10,pi/60,0];                      % initialization of control input
+u = [m*g,0,0,0];                      % initialization of control input
 t = 0;
-speed_set = [];
-while 1
-%     u = simple_path_planer(mav,tgt); % compute control action
+[waypoints,path_c] = path_planner(mav,tgt);
+while t < 10
+    u = follow_traj(mav,path_c,ts,t);
+%     u = mav_controller(mav,path_c,ts);
     mav = dynamic_mav(mav,u,ts);
-    speed_set = [speed_set;mav.speed];
-    [waypoints,path_c] = path_planner(mav,tgt);
+%     [waypoints,path_c] = path_planner(mav,tgt);
     subplot(1,2,1);
     plot_3d_obj(mav); hold on;
-    plot_3d_obj(tgt); 
+    plot_3d_obj(tgt);
     plot_path(waypoints,path_c); hold off;
     title(['t=',num2str(t),'s']);
     subplot(1,2,2);
     plot_2d_obj(mav);
     title(['z=',num2str(mav.position(3)),'m']);
-    pause(0.0);
+    set(gcf,'position',[250 0 1200 500]);
+    pause(0);
     t = t + ts;
 end
 
