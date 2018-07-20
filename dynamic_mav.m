@@ -3,6 +3,7 @@ function obj = dynamic_mav(obj,u,ts)
     m = 0.53263; % kg
     rotm = eul2rotm(obj.angle);
     obj.angle(1:3) = u(2:4);
+%     obj.angle = obj.angle + randn(1,3)*pi/36; % added randome noise
     Kf = 0.5 * eye(3);
 %     A = [zeros(6,3),[eye(3);zeros(3,3)]];  % ideal model
     A = [zeros(6,3),[eye(3);-rotm*Kf*rotm']];
@@ -17,6 +18,7 @@ function obj = dynamic_mav(obj,u,ts)
     states = [obj.position';rotm * obj.speed'];
     states = A_d * states + B_d * [u(1)/m;g];
     obj.position = states(1:3)';
+%     obj.position = obj.position + randn(1,3)/20; % added randome noise
     obj.speed = (eul2rotm(obj.angle)' * states(4:6))';    % store body frame speed
     if obj.position(3) < 0
        obj.position(3) = 0;
