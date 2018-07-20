@@ -1,4 +1,5 @@
 function [waypoints,path_c] = path_planner(obj,tgt)
+tic;
     waypoints = cell(2,1);
     waypoints{1}.position = obj.position;                                   % start point
     waypoints{1}.heading = obj.angle(1);
@@ -6,7 +7,7 @@ function [waypoints,path_c] = path_planner(obj,tgt)
     waypoints{1}.time = 0;
     waypoints{2}.position = tgt.position;                                   % final point
     waypoints{2}.heading = tgt.angle(1);
-    waypoints{2}.time = 2;
+    waypoints{2}.time = 1;
     % construct QP
     r_xyz = 1; r_yaw = 1;                                                   % regularization 
     H = zeros(18,18);    % 5 * 3 + 3 (4th order for xyz & 2nd order for yaw)
@@ -38,4 +39,5 @@ function [waypoints,path_c] = path_planner(obj,tgt)
    options = optimoptions('quadprog','Display','off');
    x0 = zeros(18,1); 
    path_c = quadprog(H,f,[],[],Aeq,beq,[],[],x0,options);
+toc;
 end

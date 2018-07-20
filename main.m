@@ -1,8 +1,8 @@
 clear; clc; close all;
-    mav.position = [-5,-5,5];    % xyz-axis
-    mav.angle = [0,0,0];
-    mav.speed = [-3,-1,0];            % body frame
-    tgt.position = [0,0,5];      % xyz-axis
+    mav.position = [-5,-5,7];         % xyz-axis
+    mav.angle = [pi/2,0,0];
+    mav.speed = [-3,-5,0];            % body frame
+    tgt.position = [0,0,5];           % xyz-axis
     tgt.angle = [pi/6,0,0];
 % sampling time
 ts = 0.05; 
@@ -14,11 +14,11 @@ m = 0.53263; % kg
 u = [m*g,0,0,0];                      % initialization of control input
 t = 0;
 [waypoints,path_c] = path_planner(mav,tgt);
-while t < 10
-    u = follow_traj(mav,path_c,ts,t);
-%     u = mav_controller(mav,path_c,ts);
+while norm(tgt.position - mav.position) > 0.05
+%     u = follow_traj(mav,path_c,ts,t);
+    u = mav_controller(mav,tgt,path_c,ts);
     mav = dynamic_mav(mav,u,ts);
-%     [waypoints,path_c] = path_planner(mav,tgt);
+    [waypoints,path_c] = path_planner(mav,tgt);
     subplot(1,2,1);
     plot_3d_obj(mav); hold on;
     plot_3d_obj(tgt);
