@@ -17,7 +17,7 @@ u = [throttle,yaw,pitch,roll]; % control input
 obj = dynamic_mav(obj,u,ts);
 ```
 ## Minimum Snap Trajectory
-Generate a trajectory by minimizing the snap over time.
+Generate a trajectory by minimizing the snap over time with designed consraints (e.g. initial position, velocity etc.).
 ```Matlab
 > [waypoints,path_c] = path_planner(obj,tgt,time)  
 ```
