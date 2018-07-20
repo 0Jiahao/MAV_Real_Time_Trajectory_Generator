@@ -12,7 +12,7 @@ obj.speed = [vx,vy,vz]; % body frame
 ## Simple Dynamic Model
 The discrete time dynamic model of MAV.
 ```Matlab
-ts = 0.05; %  sampling time is 0.05 s
+ts = 0.05; % sampling time is 0.05 s
 u = [throttle,yaw,pitch,roll]; % control input
 obj = dynamic_mav(obj,u,ts);
 ```
