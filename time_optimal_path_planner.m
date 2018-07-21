@@ -16,9 +16,7 @@ function [waypoints,path_c,opt_time] = time_optimal_path_planner(mav,tgt,ts)
         xy_pp = sqrt(x_pp.^2 + y_pp.^2);
         % acceleration on z-axis
         z_pp = 2 * path_c(13) + g;
-        % desired pitch (toward (x_pp,y_pp))
-        % emprically the pitch at the first frame is the maximum need to be
-        % proved
+        % we only use the first frame because it only generate control input at the next single sampling time
         pitch = atan2(xy_pp,z_pp);
         opt_time = time(i);
         if abs(pitch) <= pi/12
