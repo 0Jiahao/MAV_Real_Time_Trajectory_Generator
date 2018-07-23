@@ -14,12 +14,16 @@ m = 0.53263; % kg
 u = [m*g,0,0,0];                      % initialization of control input
 t = 0;
 while norm(tgt.position - mav.position) > 0.10
+    ttt = tgt;
+    coeff = log(norm(tgt.position - mav.position)+1);
+    ttt.position = tgt.position + coeff * 0.2 * [sin(10*t),sin(8*t),sin(5*t)];
+    ttt.angle = tgt.angle + coeff * 0.2 * [sin(6*t),sin(7*t),sin(8*t)];
     mav = dynamic_mav(mav,u,ts);
-    [waypoints,path_c,opt_time] = time_optimal_path_planner(mav,tgt,ts);
-    u = mav_controller(mav,tgt,path_c,ts);
+    [waypoints,path_c,opt_time] = time_optimal_path_planner(mav,ttt,ts);
+    u = mav_controller(mav,ttt,path_c,ts);
     subplot(1,2,1);
     plot_3d_obj(mav); hold on;
-    plot_3d_obj(tgt);
+    plot_3d_obj(ttt);
     plot_path(waypoints,path_c,opt_time); hold off;
     time = num2str(t);
     if length(time) == 3
@@ -41,9 +45,8 @@ while norm(tgt.position - mav.position) > 0.10
     [imind,cm] = rgb2ind(im,256); 
     % Write to the GIF File 
     if t == ts 
-      imwrite(imind,cm,'result.gif','gif', 'Loopcount',inf,'DelayTime',ts); 
+      imwrite(imind,cm,'moving_target_result.gif','gif', 'Loopcount',inf,'DelayTime',ts); 
     else 
-      imwrite(imind,cm,'result.gif','gif','WriteMode','append','DelayTime',ts); 
+      imwrite(imind,cm,'moving_target_result.gif','gif','WriteMode','append','DelayTime',ts); 
     end
 end
-

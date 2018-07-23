@@ -10,7 +10,13 @@ function u = mav_controller(obj,tgt,path_c,ts)
     % xb,yb,zb
     t = [x_pp;y_pp;z_pp+g];
     zb = t/norm(t);
-    yaw = atan2(tgt.position(2)-obj.position(2),tgt.position(1)-obj.position(1));
+    toward = atan2(tgt.position(2)-obj.position(2),tgt.position(1)-obj.position(1));
+    d = toward - obj.angle(1);
+    d = mod(d+pi, 2*pi) - pi;
+    if abs(d) >= 1/2 * pi / (1/ts)
+        d = abs(d)/d * 1/2 * pi / (1/ts);
+    end
+    yaw = obj.angle(1) + d;
     xc = [cos(yaw);sin(yaw);0];
     yb = cross(zb,xc)/norm(cross(zb,xc));
     xb = cross(yb,zb);
