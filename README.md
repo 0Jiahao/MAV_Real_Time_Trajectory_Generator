@@ -11,7 +11,7 @@ obj.angle = [yaw,pitch,roll];
 obj.speed = [vx,vy,vz]; % body frame
 ```
 ## Simple Dynamic Model of MAV
-The discrete time dynamic model of MAV.
+The discrete time dynamic model of MAV with the maximum of angular velocity 90 degrees per second.
 ```Matlab
 ts = 0.05; % sampling time is 0.05 s
 u = [throttle,yaw,pitch,roll]; % control input
