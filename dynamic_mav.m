@@ -12,9 +12,6 @@ function obj = dynamic_mav(obj,u,ts)
     D = zeros(3,2);
     A_d = eye(6) + A * ts;
     B_d = B * ts;
-    w = B_d * [u(1)/m;g];
-%     w(end)
-%     w(end)
     states = [obj.position';rotm * obj.speed'];
     states = A_d * states + B_d * [u(1)/m;g];
     obj.position = states(1:3)';
