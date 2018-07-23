@@ -17,7 +17,7 @@ ts = 0.05; % sampling time is 0.05 s
 u = [throttle,yaw,pitch,roll]; % control input
 obj = dynamic_mav(obj,u,ts);
 ```
-## [Header] Minimum Snap Trajectory
+## Minimum Snap Trajectory
 Generates a trajectory by minimizing the snap over time with designed consraints (e.g. initial position, velocity etc.).
 ```Matlab
 [waypoints,path_c] = path_planner(obj,tgt,time)
@@ -29,7 +29,7 @@ This function finds the shortest trajectory satisfies the constraint that the pi
 [waypoints,path_c,opt_time] = time_optimal_path_planner(mav,tgt,ts);
 ```
 ![](https://raw.githubusercontent.com/0Jiahao/MAV_Real_Time_Trajectory_Generator/master/images/find_best_time_interval.png)
-## Adding Disturbances
+## Add Disturbances
 Regarding the uncertainties in real enviroment, we added disturbances to the dynamic model as well as the target's position and orientation to evaluate the robutness of our implementation.
 ![](https://raw.githubusercontent.com/0Jiahao/MAV_Real_Time_Trajectory_Generator/master/images/moving_target_result.gif)
 ## References
