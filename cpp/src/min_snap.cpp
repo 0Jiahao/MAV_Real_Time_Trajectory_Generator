@@ -33,59 +33,56 @@ alglib::real_1d_array time_optimal_path_planner(mymav mav, mymav tgt)
     double ts = sin(tgt.angle(0)); // sin
     double tc = cos(tgt.angle(0)); // cos
     // construct the QP problem  
-    alglib::real_2d_array a = "[[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-			                   "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"  
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"  
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"  
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0],"   
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"  
-				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]";  
-    alglib::real_1d_array b =  "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
-    alglib::real_1d_array s =  "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]";
+    alglib::real_2d_array H = "[[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+			                   "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"  
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,2,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,2,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"  
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"   
+				               "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]";  
+    alglib::real_1d_array f =  "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
+    alglib::real_1d_array s =  "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]";
     alglib::real_2d_array c;
     alglib::integer_1d_array ct = "[0,0,0,0,0,0,0,0,0,-1,0,0]"; // 0 is =; -1 is <=; 1 is >= 
     alglib::real_1d_array x;
     alglib::minqpstate state;
     alglib::minqpreport rep;
     // create solver, set quadratic/linear terms
-    alglib::minqpcreate(18, state);
-    alglib::minqpsetquadraticterm(state, a);
-    alglib::minqpsetlinearterm(state, b);
+    alglib::minqpcreate(15, state);
+    alglib::minqpsetquadraticterm(state, H);
+    alglib::minqpsetlinearterm(state, f);
     alglib::minqpsetscale(state, s);
     alglib::minqpsetalgobleic(state, 0.0, 0.0, 0.0, 0);
-    alglib::real_1d_array x0 = "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
+    alglib::real_1d_array x0 = "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
     alglib::minqpsetstartingpoint(state, x0);
     // print information of each iteration
-    printf("\n===================================================================");
+    printf("\n========================================================================");
     printf("\nNr.\t\tPitch\t\t\tThrottle\t\tReport");
-    for(int i = 0; i < 25; i = i + 1)
+    for(int i = 0; i < 30; i = i + 1)
     {
-        double t = exp(-2 + 0.2 * i);
+        double t = exp(-2.5 + 0.2 * i);
         // construct the constraints
-        double _c[] = {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,mav.position(0), // x of start point
-                    0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,mav.position(1), // y of start point
-                    0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,mav.position(2), // z of start point
-                    pow(t,4),pow(t,3),pow(t,2),pow(t,1),1,0,0,0,0,0,0,0,0,0,0,0,0,0,tgt.position(0), // x of final point
-                    0,0,0,0,0,pow(t,4),pow(t,3),pow(t,2),pow(t,1),1,0,0,0,0,0,0,0,0,tgt.position(1), // y of final point
-                    0,0,0,0,0,0,0,0,0,0,pow(t,4),pow(t,3),pow(t,2),pow(t,1),1,0,0,0,tgt.position(2), // z of final point
-                    0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,speed_w(0), // vx of start point
-                    0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,speed_w(1), // vy of start point
-                    0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,speed_w(2), // vz of start point
-                    tc*4*pow(t,3),tc*3*pow(t,2),tc*2*pow(t,1),tc,0,ts*4*pow(t,3),ts*3*pow(t,2),ts*2*pow(t,1),ts,0,0,0,0,0,0,0,0,0,2,         // vx of final point (<= 2) can be tunned
-                    -ts*4*pow(t,3),-ts*3*pow(t,2),-ts*2*pow(t,1),-ts,0,tc*4*pow(t,3),tc*3*pow(t,2),tc*2*pow(t,1),tc,0,0,0,0,0,0,0,0,0,0,     // vy of final point
-                    0,0,0,0,0,0,0,0,0,0,4*pow(t,3),3*pow(t,2),2*pow(t,1),1,0,0,0,0,0};                                                       // vz of final point
-        c.setcontent(12,19,_c);
+        double _c[] = {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,mav.position(0), // x of start point
+                       0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,mav.position(1), // y of start point
+                       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,mav.position(2), // z of start point
+                       pow(t,4),pow(t,3),pow(t,2),pow(t,1),1,0,0,0,0,0,0,0,0,0,0,tgt.position(0), // x of final point
+                       0,0,0,0,0,pow(t,4),pow(t,3),pow(t,2),pow(t,1),1,0,0,0,0,0,tgt.position(1), // y of final point
+                       0,0,0,0,0,0,0,0,0,0,pow(t,4),pow(t,3),pow(t,2),pow(t,1),1,tgt.position(2), // z of final point
+                       0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,speed_w(0), // vx of start point
+                       0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,speed_w(1), // vy of start point
+                       0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,speed_w(2), // vz of start point
+                       tc*4*pow(t,3),tc*3*pow(t,2),tc*2*pow(t,1),tc,0,ts*4*pow(t,3),ts*3*pow(t,2),ts*2*pow(t,1),ts,0,0,0,0,0,0,2,         // vx of final point (<= 2) can be tunned
+                       -ts*4*pow(t,3),-ts*3*pow(t,2),-ts*2*pow(t,1),-ts,0,tc*4*pow(t,3),tc*3*pow(t,2),tc*2*pow(t,1),tc,0,0,0,0,0,0,0,     // vy of final point
+                       0,0,0,0,0,0,0,0,0,0,4*pow(t,3),3*pow(t,2),2*pow(t,1),1,0,0};                                                       // vz of final point
+        c.setcontent(12,16,_c);
         alglib::minqpsetlc(state, c, ct);
         // Solve problem with BLEIC-based QP solver.
         alglib::minqpoptimize(state);
@@ -95,7 +92,7 @@ alglib::real_1d_array time_optimal_path_planner(mymav mav, mymav tgt)
         printf("\n#%i\t\t%+0.6f\t\t%+0.6f\t\t%d",i+1,pitch,sqrt(pow(2 * x(2),2) + pow(2 * x(7),2) + pow(2 * x(12) - g,2)),int(rep.terminationtype));     // display for iteration
         if(pitch <= M_PI/12 && sqrt(pow(2 * x(2),2) + pow(2 * x(7),2) + pow(2 * x(12) - g,2)) <= 2 * g)
         {
-            printf("\n-------------------------------------------------------------------");
+            printf("\n------------------------------------------------------------------------");
             printf("\nTime for arrival:\t%0.6f",t);
             // clock stop
             clock_t endTime = clock();
@@ -117,12 +114,12 @@ control_input minimum_snap_control(mymav mav, mymav tgt, alglib::real_1d_array x
     // desired acceleration
     double x_pp = 2 * x[2];
     double y_pp = 2 * x[7];
-    double z_pp = 2 * x[12];
-    double norm = sqrt(pow(x_pp,2) + pow(y_pp,2) + pow(z_pp-g,2));
+    double z_pp = 2 * x[12] - g;
+    double norm = sqrt(pow(x_pp,2) + pow(y_pp,2) + pow(z_pp,2));
     // store throttle
     input.throttle = -norm;
-    Eigen::Vector3d zb(x_pp,y_pp,z_pp-g);
-    zb = -zb / norm;       
+    Eigen::Vector3d zb(x_pp,y_pp,z_pp);
+    zb = - zb / norm;       
     // calculate the desired yaw angle
     double toward = atan2(tgt.position(1)-mav.position(1),tgt.position(0)-mav.position(0));
     double increment = toward - mav.angle(0);
@@ -141,7 +138,6 @@ control_input minimum_snap_control(mymav mav, mymav tgt, alglib::real_1d_array x
     yb = yb / norm;
     Eigen::Vector3d xb;
     xb = yb.cross(zb);
-            // std::cout << "\n" << xb << "\n" << yb << "\n" << zb << std::endl;
     // generate the euler angle
     yaw = atan2(xb(1),xb(0));
     double pitch = atan2(-xb(2),sqrt(pow(yb(2),2)+pow(zb(2),2)));
@@ -167,7 +163,7 @@ int main()
 	mymav tgt;
 	tgt.info();
 	// create mav
-	mymav mav(-5,0,0,0,0,0,0,0,0);
+	mymav mav(-2,-4,5,M_PI/2,M_PI/20,M_PI/18,1,1,-1);
 	mav.info();
     // solve the optimal trajectory
     alglib::real_1d_array x;
