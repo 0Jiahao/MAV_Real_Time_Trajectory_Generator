@@ -66,9 +66,9 @@ alglib::real_1d_array time_optimal_path_planner(mymav mav, mymav tgt)
     // print information of each iteration
     printf("\n========================================================================");
     printf("\nNr.\t\tPitch\t\t\tThrottle\t\tReport");
-    for(int i = 0; i < 30; i = i + 1)
+    for(int i = 0; i < 32; i = i + 1)
     {
-        double t = exp(-2.5 + 0.2 * i);
+        double t = exp(-2.5 + 0.175 * i);
         // construct the constraints
         double _c[] = {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,mav.position(0), // x of start point
                        0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,mav.position(1), // y of start point
@@ -90,7 +90,10 @@ alglib::real_1d_array time_optimal_path_planner(mymav mav, mymav tgt)
         // find the most aggressive trajectory
         double pitch = abs(atan2(sqrt(pow(2 * x(2),2) + pow(2 * x(7),2)), abs(2 * x(12) - g)));
         printf("\n#%i\t\t%+0.6f\t\t%+0.6f\t\t%d",i+1,pitch,sqrt(pow(2 * x(2),2) + pow(2 * x(7),2) + pow(2 * x(12) - g,2)),int(rep.terminationtype));     // display for iteration
-        if(pitch <= M_PI/12 && sqrt(pow(2 * x(2),2) + pow(2 * x(7),2) + pow(2 * x(12) - g,2)) <= 2 * g)
+        // unsatisfy the boundary or not?
+        bool throttle_ub_sat = ((2 * x(12) - g < 0) && (sqrt(pow(2 * x(2),2) + pow(2 * x(7),2) + pow(2 * x(12) - g,2)) < 2 * g));
+        bool throttle_lb_sat = ((2 * x(12) - g > 0) && (sqrt(pow(2 * x(2),2) + pow(2 * x(7),2) + pow(2 * x(12) - g,2)) < g));
+        if(pitch <= M_PI/12 && ( throttle_lb_sat || throttle_ub_sat ))
         {
             printf("\n------------------------------------------------------------------------");
             printf("\nTime for arrival:\t%0.6f",t);
@@ -163,7 +166,7 @@ int main()
 	mymav tgt;
 	tgt.info();
 	// create mav
-	mymav mav(-2,-4,5,M_PI/2,M_PI/20,M_PI/18,1,1,-1);
+	mymav mav(-16,0,-4.5,0,0,0,0,0,0);
 	mav.info();
     // solve the optimal trajectory
     alglib::real_1d_array x;
@@ -171,5 +174,10 @@ int main()
     // compute the control input 
     control_input input;
     input = minimum_snap_control(mav, tgt, x, 0.05);
+    std::cout << "\n[solution]\t";
+    for(int i = 0; i < 15; i++)
+    {
+        printf("%+0.1f\t",x[i]);
+    }
     return 0;
 }
